@@ -42,84 +42,61 @@ let musicPanel;
 let statusBarItem;
 let isEnabled = false;
 function activate(context) {
-    console.log('🎵 É o zap zap zap zap zap!');
-    // Criar botão na barra de status
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     statusBarItem.text = '$(mute) sonzao cabuloso Zap Music';
     statusBarItem.tooltip = 'Clique para ativar/desativar música de fundo';
     statusBarItem.command = 'zap-theme.toggleMusic';
     statusBarItem.show();
-    console.log('✅ Status bar item criado');
-    // Comando para ligar/desligar música
     const toggleCommand = vscode.commands.registerCommand('zap-theme.toggleMusic', () => {
-        console.log(`🔄 Toggle music - Estado atual: ${isEnabled}`);
         if (isEnabled && musicPanel) {
             stopMusic();
             isEnabled = false;
             statusBarItem.text = '$(mute) Zap Music';
             vscode.window.showInformationMessage('🔇 Música Zap desativada (covarde!!!!)');
-            console.log('⏸️ Música pausada');
         }
         else {
             isEnabled = true;
             playBackgroundMusic(context);
             statusBarItem.text = '$(unmute) Zap Music';
             vscode.window.showInformationMessage('🎵 Música Zap ativada!');
-            console.log('▶️ Música iniciada');
         }
     });
-    // Auto-start se configurado
     const config = vscode.workspace.getConfiguration('zap-theme');
     const autoStart = config.get('autoStartMusic', false);
     if (autoStart) {
-        console.log('🚀 Auto-start habilitado, iniciando música...');
         setTimeout(() => {
             vscode.commands.executeCommand('zap-theme.toggleMusic');
         }, 2000);
     }
     context.subscriptions.push(toggleCommand, statusBarItem);
-    console.log('✅ Extensão Zap completamente ativada');
 }
 async function playBackgroundMusic(context) {
     try {
-        console.log('🎵 Iniciando playBackgroundMusic...');
         if (musicPanel) {
-            console.log('⚠️ Painel já existe, trazendo para frente');
             musicPanel.reveal();
             return;
         }
         const soundsPath = path.join(context.extensionPath, 'sounds');
-        console.log(`📁 Caminho da pasta sounds: ${soundsPath}`);
-        // Verificar se a pasta sounds existe
         if (!fs.existsSync(soundsPath)) {
-            console.error('❌ Pasta sounds/ não encontrada!');
             vscode.window.showWarningMessage('❌ Pasta "sounds/" não encontrada! Crie a pasta e adicione um arquivo MP3.');
             isEnabled = false;
             statusBarItem.text = '$(mute) Zap Music';
             return;
         }
-        // Buscar arquivo MP3
         const files = fs.readdirSync(soundsPath);
-        console.log(`📂 Arquivos na pasta sounds: ${files.join(', ')}`);
         const mp3File = files.find(f => f.toLowerCase().endsWith('.mp3'));
         if (!mp3File) {
-            console.error('❌ Nenhum arquivo MP3 encontrado!');
             vscode.window.showWarningMessage('❌ Nenhum arquivo MP3 encontrado na pasta "sounds/"!');
             isEnabled = false;
             statusBarItem.text = '$(mute) Zap Music';
             return;
         }
-        console.log(`🎵 Arquivo MP3 encontrado: ${mp3File}`);
         const musicPath = path.join(soundsPath, mp3File);
         const musicUri = vscode.Uri.file(musicPath);
-        // Buscar icon.jpg
         const iconPath = path.join(context.extensionPath, 'suco.jpg');
         const iconUri = vscode.Uri.file(iconPath);
-        // Obter configuração de volume
         const config = vscode.workspace.getConfiguration('zap-theme');
         const volume = config.get('musicVolume', 0.5);
-        console.log(`🔊 Volume configurado: ${volume}`);
-        // Criar painel webview
         musicPanel = vscode.window.createWebviewPanel('zapMusicPlayer', '🎵 Zap Music Player', vscode.ViewColumn.Two, {
             enableScripts: true,
             retainContextWhenHidden: true,
@@ -128,19 +105,14 @@ async function playBackgroundMusic(context) {
                 vscode.Uri.file(context.extensionPath)
             ]
         });
-        console.log('✅ Webview panel criado');
         musicPanel.webview.html = getWebviewContent(musicPanel.webview.asWebviewUri(musicUri), musicPanel.webview.asWebviewUri(iconUri), mp3File, musicPanel.webview.cspSource, volume);
-        console.log('✅ HTML do webview configurado');
         musicPanel.onDidDispose(() => {
-            console.log('🗑️ Painel de música fechado');
             musicPanel = undefined;
             isEnabled = false;
             statusBarItem.text = '$(mute) Zap Music';
         });
-        console.log('✅ Player de música iniciado com sucesso!');
     }
     catch (error) {
-        console.error('❌ Erro ao tocar música:', error);
         vscode.window.showErrorMessage(`❌ Erro ao carregar música: ${error}`);
         isEnabled = false;
         statusBarItem.text = '$(mute) Zap Music';
@@ -310,68 +282,37 @@ function getWebviewContent(musicUri, iconUri, fileName, cspSource, volume) {
             </audio>
             
             <script>
-                console.log('🎵 Webview carregado');
-                
                 const audio = document.getElementById('bgMusic');
                 const status = document.getElementById('status');
                 const playBtn = document.getElementById('playBtn');
                 const equalizer = document.getElementById('equalizer');
                 
-                // Configurar volume
                 audio.volume = ${volume};
-                console.log('🔊 Volume definido para: ${volume}');
                 
-                // Evento: música começou a tocar
                 audio.addEventListener('playing', () => {
-                    console.log('▶️ Música tocando');
                     status.textContent = '▶️ Tocando em loop...';
                     playBtn.style.display = 'none';
                     equalizer.classList.remove('hidden');
                 });
                 
-                // Evento: música pausada
                 audio.addEventListener('pause', () => {
-                    console.log('⏸️ Música pausada');
                     if (!audio.ended) {
                         status.textContent = '⏸️ Pausado';
                     }
                 });
                 
-                // Evento: erro ao carregar
                 audio.addEventListener('error', (e) => {
-                    console.error('❌ Erro ao carregar música:', e);
                     status.textContent = '❌ Erro ao carregar música';
                     status.style.color = '#f38ba8';
                     playBtn.style.display = 'block';
                     equalizer.classList.add('hidden');
                 });
                 
-                // Evento: música pronta para tocar
-                audio.addEventListener('canplay', () => {
-                    console.log('✅ Música pronta para tocar');
-                });
-                
-                // Evento: música carregada
-                audio.addEventListener('loadedmetadata', () => {
-                    console.log('📊 Duração:', audio.duration, 'segundos');
-                });
-                
-                // Botão manual de play
                 playBtn.addEventListener('click', () => {
-                    console.log('🖱️ Botão de play clicado');
-                    audio.play().then(() => {
-                        console.log('✅ Play bem-sucedido');
-                    }).catch(err => {
-                        console.error('❌ Erro ao dar play:', err);
-                    });
+                    audio.play();
                 });
                 
-                // Tentar autoplay
-                console.log('🚀 Tentando autoplay...');
-                audio.play().then(() => {
-                    console.log('✅ Autoplay bem-sucedido!');
-                }).catch((err) => {
-                    console.warn('⚠️ Autoplay bloqueado:', err);
+                audio.play().catch(() => {
                     status.textContent = '⚠️ Clique no botão para iniciar a Sinfonia nº 1 em Dó maior, Op. 21';
                     status.style.color = '#f9e2af';
                     playBtn.style.display = 'block';
@@ -383,14 +324,12 @@ function getWebviewContent(musicUri, iconUri, fileName, cspSource, volume) {
     `;
 }
 function stopMusic() {
-    console.log('🛑 Parando música...');
     if (musicPanel) {
         musicPanel.dispose();
         musicPanel = undefined;
     }
 }
 function deactivate() {
-    console.log('👋 Extensão Zap desativada');
     stopMusic();
 }
 //# sourceMappingURL=extension.js.map
