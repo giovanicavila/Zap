@@ -1,0 +1,72 @@
+{
+  "name": "zap-theme",
+  "displayName": "Zap",
+  "description": "Tava entendiado, criei o tema",
+  "version": "0.0.1",
+  "publisher": "giovanicavila",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Themes"
+  ],
+  "keywords": [
+    "theme",
+    "color-theme",
+    "zap",
+    "music",
+    "background-music"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "themes": [
+      {
+        "label": "Zap",
+        "uiTheme": "vs-dark",
+        "path": "./themes/zap-color-theme.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "zap-theme.toggleMusic",
+        "title": "Zap: Ativar/Desativar Música"
+      }
+    ],
+    "configuration": {
+      "title": "Zap Theme",
+      "properties": {
+        "zap-theme.musicVolume": {
+          "type": "number",
+          "default": 0.5,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Volume da música de fundo (0.0 = mudo, 1.0 = máximo)"
+        },
+        "zap-theme.autoStartMusic": {
+          "type": "boolean",
+          "default": false,
+          "description": "Iniciar música automaticamente ao abrir o VS Code"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giovanicavila/Zap"
+  },
+  "icon": "icon.jpg"
+}
