@@ -2,7 +2,7 @@
   "name": "zap-theme",
   "displayName": "Whatsapp Theme",
   "description": "The real WhatsApp (AKA zap) theme ⚡",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "giovanicavila",
   "engines": {
     "vscode": "^1.80.0"
