@@ -15,7 +15,11 @@
     "color-theme",
     "zap",
     "music",
-    "background-music"
+    "background-music",
+    "whatsapp",
+    "Whatsapp",
+    "zapzap",
+    "WhatsApp"
   ],
   "main": "./out/extension.js",
   "activationEvents": [
