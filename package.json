@@ -2,7 +2,7 @@
   "name": "zap-theme",
   "displayName": "Zap Theme",
   "description": "Tema do zap zap ⚡",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "giovanicavila",
   "engines": {
     "vscode": "^1.80.0"
