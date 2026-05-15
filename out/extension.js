@@ -43,7 +43,7 @@ let statusBarItem;
 let isEnabled = false;
 function activate(context) {
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    statusBarItem.text = '$(mute) sonzao cabuloso Zap Music';
+    statusBarItem.text = '$(mute) whatsapp';
     statusBarItem.tooltip = 'Clique para ativar/desativar música de fundo';
     statusBarItem.command = 'zap-theme.toggleMusic';
     statusBarItem.show();
@@ -52,13 +52,13 @@ function activate(context) {
             stopMusic();
             isEnabled = false;
             statusBarItem.text = '$(mute) Zap Music';
-            vscode.window.showInformationMessage('🔇 Música Zap desativada (covarde!!!!)');
+            vscode.window.showInformationMessage('🔇');
         }
         else {
             isEnabled = true;
             playBackgroundMusic(context);
             statusBarItem.text = '$(unmute) Zap Music';
-            vscode.window.showInformationMessage('🎵 Música Zap ativada!');
+            vscode.window.showInformationMessage('🎵 (8');
         }
     });
     const config = vscode.workspace.getConfiguration('zap-theme');
@@ -93,11 +93,11 @@ async function playBackgroundMusic(context) {
         }
         const musicPath = path.join(soundsPath, mp3File);
         const musicUri = vscode.Uri.file(musicPath);
-        const iconPath = path.join(context.extensionPath, 'suco.jpg');
+        const iconPath = path.join(context.extensionPath, 'sc.jpg');
         const iconUri = vscode.Uri.file(iconPath);
         const config = vscode.workspace.getConfiguration('zap-theme');
         const volume = config.get('musicVolume', 0.5);
-        musicPanel = vscode.window.createWebviewPanel('zapMusicPlayer', '🎵 Zap Music Player', vscode.ViewColumn.Two, {
+        musicPanel = vscode.window.createWebviewPanel('zapMusicPlayer', '🎵 whatsapp', vscode.ViewColumn.Two, {
             enableScripts: true,
             retainContextWhenHidden: true,
             localResourceRoots: [
@@ -189,6 +189,7 @@ function getWebviewContent(musicUri, iconUri, fileName, cspSource, volume) {
                     border-radius: 50px;
                     cursor: pointer;
                     margin-top: 25px;
+                    margin-left: 125px;
                     font-weight: bold;
                     transition: all 0.3s ease;
                     box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4);
@@ -262,7 +263,7 @@ function getWebviewContent(musicUri, iconUri, fileName, cspSource, volume) {
         <body>
             <div class="container">
                 <img src="${iconUri}" alt="Zap Icon" class="music-icon">
-                <h1>Zap Music Player</h1>
+                <h1>whatsapp</h1>
                 
                 <div class="equalizer" id="equalizer">
                     <div class="bar"></div>
@@ -272,9 +273,8 @@ function getWebviewContent(musicUri, iconUri, fileName, cspSource, volume) {
                     <div class="bar"></div>
                 </div>
                 
-                <p id="status">⏳ Carregando música...</p>
-                <p id="fileName">📁 ${fileName}</p>
-                <button id="playBtn" style="display:none;">▶️ Clique para Tocar </button>
+                <p id="status">loading whatsapp...</p>
+                <button id="playBtn" style="display:none;">whatsapp </button>
             </div>
             
             <audio id="bgMusic" loop preload="auto">
@@ -290,19 +290,19 @@ function getWebviewContent(musicUri, iconUri, fileName, cspSource, volume) {
                 audio.volume = ${volume};
                 
                 audio.addEventListener('playing', () => {
-                    status.textContent = '▶️ Tocando em loop...';
+                    status.textContent = '▶️';
                     playBtn.style.display = 'none';
                     equalizer.classList.remove('hidden');
                 });
                 
                 audio.addEventListener('pause', () => {
                     if (!audio.ended) {
-                        status.textContent = '⏸️ Pausado';
+                        status.textContent = '⏸️';
                     }
                 });
                 
                 audio.addEventListener('error', (e) => {
-                    status.textContent = '❌ Erro ao carregar música';
+                    status.textContent = '❌ whatsapp error';
                     status.style.color = '#f38ba8';
                     playBtn.style.display = 'block';
                     equalizer.classList.add('hidden');
@@ -313,7 +313,7 @@ function getWebviewContent(musicUri, iconUri, fileName, cspSource, volume) {
                 });
                 
                 audio.play().catch(() => {
-                    status.textContent = '⚠️ Clique no botão para iniciar a Sinfonia nº 1 em Dó maior, Op. 21';
+                    status.textContent = 'whatsapp';
                     status.style.color = '#f9e2af';
                     playBtn.style.display = 'block';
                     equalizer.classList.add('hidden');

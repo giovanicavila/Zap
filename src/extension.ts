@@ -11,8 +11,8 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.StatusBarAlignment.Right, 
         100
     );
-    statusBarItem.text = '$(mute) sonzao cabuloso Zap Music';
-    statusBarItem.tooltip = 'Clique para ativar/desativar música de fundo';
+    statusBarItem.text = '$(mute) whatsapp ';
+    statusBarItem.tooltip = 'Click to enable/disable background music';
     statusBarItem.command = 'zap-theme.toggleMusic';
     statusBarItem.show();
 
@@ -22,13 +22,13 @@ export function activate(context: vscode.ExtensionContext) {
             if (isEnabled && musicPanel) {
                 stopMusic();
                 isEnabled = false;
-                statusBarItem.text = '$(mute) Zap Music';
-                vscode.window.showInformationMessage('🔇 Música Zap desativada (covarde!!!!)');
+                statusBarItem.text = '$(mute) Zap';
+                vscode.window.showInformationMessage('🔇 Zap music disabled (coward!!!!))');
             } else {
                 isEnabled = true;
                 playBackgroundMusic(context);
-                statusBarItem.text = '$(unmute) Zap Music';
-                vscode.window.showInformationMessage('🎵 Música Zap ativada!');
+                statusBarItem.text = '$(unmute) Zap';
+                vscode.window.showInformationMessage('🎵 Zap music enabled!');
             }
         }
     );
@@ -55,9 +55,9 @@ async function playBackgroundMusic(context: vscode.ExtensionContext) {
         const soundsPath = path.join(context.extensionPath, 'sounds');
         
         if (!fs.existsSync(soundsPath)) {
-            vscode.window.showWarningMessage('❌ Pasta "sounds/" não encontrada! Crie a pasta e adicione um arquivo MP3.');
+            vscode.window.showWarningMessage('❌ Folder "sounds/" not found! Create the folder and add an MP3 file.');
             isEnabled = false;
-            statusBarItem.text = '$(mute) Zap Music';
+            statusBarItem.text = '$(mute) Zap';
             return;
         }
         
@@ -65,24 +65,24 @@ async function playBackgroundMusic(context: vscode.ExtensionContext) {
         const mp3File = files.find(f => f.toLowerCase().endsWith('.mp3'));
         
         if (!mp3File) {
-            vscode.window.showWarningMessage('❌ Nenhum arquivo MP3 encontrado na pasta "sounds/"!');
+            vscode.window.showWarningMessage('❌ No MP3 file found in the "sounds/" folder!');
             isEnabled = false;
-            statusBarItem.text = '$(mute) Zap Music';
+            statusBarItem.text = '$(mute) Zap';
             return;
         }
         
         const musicPath = path.join(soundsPath, mp3File);
         const musicUri = vscode.Uri.file(musicPath);
         
-        const iconPath = path.join(context.extensionPath, 'suco.jpg');
+        const iconPath = path.join(context.extensionPath, 'sc.jpg');
         const iconUri = vscode.Uri.file(iconPath);
         
         const config = vscode.workspace.getConfiguration('zap-theme');
         const volume = config.get<number>('musicVolume', 0.5);
         
         musicPanel = vscode.window.createWebviewPanel(
-            'zapMusicPlayer',
-            '🎵 Zap Music Player',
+            'nothing ever happens',
+            '...',
             vscode.ViewColumn.Two,
             { 
                 enableScripts: true, 
@@ -105,13 +105,13 @@ async function playBackgroundMusic(context: vscode.ExtensionContext) {
         musicPanel.onDidDispose(() => {
             musicPanel = undefined;
             isEnabled = false;
-            statusBarItem.text = '$(mute) Zap Music';
+            statusBarItem.text = '$(mute) Zap';
         });
 
     } catch (error) {
-        vscode.window.showErrorMessage(`❌ Erro ao carregar música: ${error}`);
+        vscode.window.showErrorMessage(`❌ Error loading music: ${error}`);
         isEnabled = false;
-        statusBarItem.text = '$(mute) Zap Music';
+        statusBarItem.text = '$(mute) Zap';
     }
 }
 
@@ -124,13 +124,13 @@ function getWebviewContent(
 ): string {
     return `
         <!DOCTYPE html>
-        <html lang="pt-BR">
+        <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta http-equiv="Content-Security-Policy" 
                   content="default-src 'none'; media-src ${cspSource}; img-src ${cspSource}; script-src 'unsafe-inline'; style-src 'unsafe-inline';">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Zap Music Player</title>
+            <title>whatsapp</title>
             <style>
                 * {
                     margin: 0;
@@ -265,7 +265,7 @@ function getWebviewContent(
         <body>
             <div class="container">
                 <img src="${iconUri}" alt="Zap Icon" class="music-icon">
-                <h1>Zap Music Player</h1>
+                <h1>Nothing Ever Happens</h1>
                 
                 <div class="equalizer" id="equalizer">
                     <div class="bar"></div>
@@ -275,9 +275,9 @@ function getWebviewContent(
                     <div class="bar"></div>
                 </div>
                 
-                <p id="status">⏳ Carregando música...</p>
+                <p id="status">⏳ Loading music...</p>
                 <p id="fileName">📁 ${fileName}</p>
-                <button id="playBtn" style="display:none;">▶️ Clique para Tocar </button>
+                <button id="playBtn" style="display:none;">▶️ Click to Play</button>
             </div>
             
             <audio id="bgMusic" loop preload="auto">
@@ -293,19 +293,19 @@ function getWebviewContent(
                 audio.volume = ${volume};
                 
                 audio.addEventListener('playing', () => {
-                    status.textContent = '▶️ Tocando em loop...';
+                    status.textContent = '▶️ Playing on loop...';
                     playBtn.style.display = 'none';
                     equalizer.classList.remove('hidden');
                 });
                 
                 audio.addEventListener('pause', () => {
                     if (!audio.ended) {
-                        status.textContent = '⏸️ Pausado';
+                        status.textContent = '⏸️ Paused';
                     }
                 });
                 
                 audio.addEventListener('error', (e) => {
-                    status.textContent = '❌ Erro ao carregar música';
+                    status.textContent = '❌ Error loading music';
                     status.style.color = '#f38ba8';
                     playBtn.style.display = 'block';
                     equalizer.classList.add('hidden');
@@ -316,7 +316,7 @@ function getWebviewContent(
                 });
                 
                 audio.play().catch(() => {
-                    status.textContent = '⚠️ Clique no botão para iniciar a Sinfonia nº 1 em Dó maior, Op. 21';
+                    status.textContent = '⚠️ Click the button to start Symphony No. 1 in C major, Op. 21';
                     status.style.color = '#f9e2af';
                     playBtn.style.display = 'block';
                     equalizer.classList.add('hidden');
